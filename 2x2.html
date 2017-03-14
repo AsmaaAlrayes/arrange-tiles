@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta uharset="UTF-8">
+<title>Hw2</title>
+<script>
+window.addEventListener("load", start, false);
+window.addEventListener("load", checkOrder, false);
+
+var pictures = ["img0","img1", "img2", "img3"];
+var taken = [];
+var empty; //keep track of the empty cells id
+var emptycell;
+
+//two dimensional array
+//var 
+arr = [];	//to keep track of numbers already displayed
+/*
+  0 1
+0 0 1
+1 2 3
+*/
+function restart(){
+	for(var x = 1; x < 2; x++){
+	    arr[x] = [];    
+	    for(var y = 0; y < 2; y++){
+	    	 arr[x][y]=null;
+	    }
+	} 
+	//remove all images
+	for(var y = 0; y < 4; y++){
+		var current =  document.getElementById(pictures[y]);
+		current.setAttribute("src", "" );
+	}
+	
+	for(var r = 0; r < 4; r++){
+		taken[r]=null;	
+	}	
+	start();
+	checkOrder();
+	
+}
+function start() {
+	var para = document.getElementById("para");
+	
+	for(var x = 0; x < 2; x++){
+	    arr[x] = [];    
+	  //choose random image 
+	    for(var y = 0; y < 2; y++){
+	    	if( x+2*y !=pictures.length-1){
+				//var current =  document.getElementById(pictures[x+2*y]);
+				var current =  document.getElementById(pictures[2*x+y]);
+		    	current.addEventListener("click", Empty, false);
+		    	
+		        var r = Math.floor((Math.random() * 3) + 1);
+				while(taken[r] != null){
+					var r = Math.floor((Math.random() * 3) + 1);
+				}
+				taken[r] = 1;		//to keep track of numbers already displayed
+				current.setAttribute("src", "image/"+ r + ".png" );
+				arr[x][y] = r;
+	    	}
+	    }    
+	}
+	//the empty cell
+	empty =  document.getElementById(pictures[pictures.length-1]);
+	e = document.ge
+	//empty.addEventListener("click", Empty, false);
+	empty.addEventListener("click", Empty, false);
+	emptycell = 11;
+	
+
+	checkOrder();
+}
+function checkOrder() {
+	if(arr[1][1] == null){
+		var win = true;
+		var temp = arr[0][0];
+		for(var x = 0; x < 2; x++){
+		    for(var y = 0; y < 2; y++){
+				if (temp > arr[x][y] && arr[x][y] !=null)
+					//if ()
+					{
+						win = false;
+						para.innerHTML = "";
+						break;
+					}
+				else if (temp <= arr[x][y]){
+					temp = arr[x][y];
+				}
+		    }
+		}
+		if(win){
+			para.innerHTML = "You WON!";
+			window.alert("You WON!")
+			}
+	}
+	else
+		para.innerHTML = "";
+}
+function Empty(e) {
+	clickedCell = e.target.id;
+	cellNumber = clickedCell.charAt(3);
+	//para.innerHTML = "clicked cell "+cellNumber;
+	//yx
+	xEmpty = Number(String(emptycell).charAt(0));
+	yEmpty = Number(String(emptycell).charAt(1));
+	
+	//x+2*y = cellNumber
+	if(cellNumber ==0){ xClicked = 0; yClickes = 0;}
+	if(cellNumber ==1){ xClicked = 0; yClickes = 1;}
+	if(cellNumber ==2){ xClicked = 1; yClickes = 0;}
+	if(cellNumber ==3){ xClicked = 1; yClickes = 1;}
+	
+	
+	if (arr[1][1] == null){
+		
+	}
+	//if(xClicked == 0){//at the first level
+	//dont check up
+	
+		if (xClicked != 1 && arr[xClicked+1][yClickes] == null)	//down is empty cell
+			checkDown(xClicked ,yClickes);
+		else if (xClicked != 0 && arr[xClicked-1][yClickes] == null)//up
+			checkUp(xClicked ,yClickes);
+		else if(yClickes != 1 && arr[xClicked][yClickes+1] == null)//
+			checkRight(xClicked ,yClickes);
+		else if(yClickes != 0 && arr[xClicked][yClickes-1] == null)
+			checkLeft(xClicked ,yClickes);
+	
+			
+	
+
+		checkOrder();
+}
+function checkLeft(x ,y) {
+	
+	//  0  1
+	//0 0  1
+	//1 2  3
+	newX= x;
+	newY= y-1;
+	//if (arr[x][y] == null){//empty cell
+		var original = document.getElementById("img"+(2*x+y));
+		var originalID = original.getAttribute("src");
+		var emptyimage = document.getElementById("img"+(2*x+y-1));
+		//switch between the empty cell and the clicked cell
+		emptyimage.setAttribute("src", originalID);
+		original.setAttribute("src", "");
+		arr[x][y-1] = arr[x][y];
+		arr[x][y] = null;
+		
+		//----Set new Empty cells
+		empty =  original;
+		empty.removeEventListener("click", Empty, false);
+		original = emptyimage;
+		original.addEventListener("click", Empty, false);
+		//emptyCell
+		emptycell = String(x);
+		emptycell+=String(y);
+		flag =1;
+//	}
+}
+function checkRight(x ,y) {
+	newX= x;
+	newY= y+1;
+		var original = document.getElementById("img"+(2*x+y));
+		var originalID = original.getAttribute("src");
+		var emptyimage = document.getElementById("img"+(2*x+y+1));
+		//switch between the empty cell and the clicked cell
+		emptyimage.setAttribute("src", originalID);
+		original.setAttribute("src", "");
+		arr[x][y+1] = arr[x][y];
+		arr[x][y] = null;
+		
+		//----Set new Empty cells
+		empty =  original;
+		empty.removeEventListener("click", Empty, false);
+		original = emptyimage;
+		original.addEventListener("click", Empty, false);
+		//emptyCell
+		emptycell = String(x);
+		emptycell+=String(y);
+		flag =1;
+}
+function checkDown(x ,y) {
+	newX= x+1;
+	newY= y;
+	//if (arr[x+1][y] == null){//empty cell
+		var original = document.getElementById("img"+(2*x+y));
+		var originalID = original.getAttribute("src");
+		var emptyimage = document.getElementById("img"+(2*(1+x)+y));
+		//switch between the empty cell and the clicked cell
+		emptyimage.setAttribute("src", originalID);
+		original.setAttribute("src", "");
+		arr[x+1][y] = arr[x][y];
+		arr[x][y] = null;
+		
+		//----Set new Empty cells
+		empty =  original;
+		empty.removeEventListener("click", Empty, false);
+		original = emptyimage;
+		original.addEventListener("click", Empty, false);
+		//emptyCell
+		emptycell = String(x);
+		emptycell+=String(y);
+		flag =1;
+	//}
+}
+function checkUp(x ,y) {
+	newX= x-1;
+	newY= y;
+	//if (arr[x+1][y] == null){//empty cell
+		var original = document.getElementById("img"+(2*x+y));
+		var originalID = original.getAttribute("src");
+		var emptyimage = document.getElementById("img"+(2*(x-1)+y));
+		//switch between the empty cell and the clicked cell
+		emptyimage.setAttribute("src", originalID);
+		original.setAttribute("src", "");
+		arr[x-1][y] = arr[x][y];
+		arr[x][y] = null;
+		
+		//----Set new Empty cells
+		empty =  original;
+		empty.removeEventListener("click", Empty, false);
+		original = emptyimage;
+		original.addEventListener("click", Empty, false);
+		//emptyCell
+		emptycell = String(x);
+		emptycell+=String(y);
+		flag =1;
+	//}
+}
+
+
+
+
+/*for (var i = 0; i < pictures.length; i++) {
+	var current =  document.getElementById(pictures[i]);
+	current.addEventListener("click", check, false);
+	//choose random image 
+	var r = Math.floor((Math.random() * 4) + 1);
+		while(taken[r] != null){
+			var r = Math.floor((Math.random() * 4) + 1);
+		}
+		taken[r] = 1;		
+		current.setAttribute("src", "image/"+ r + ".png" );
+	
+	for(var x = 0; x < 2; x++){
+	    arr[x] = [];    
+	    for(var y = 0; y < 2; y++){  
+	        var r = Math.floor((Math.random() * 4) + 1);
+			while(taken[r] != null){
+				var r = Math.floor((Math.random() * 4) + 1);
+			}
+			taken[r] = 1;		//to keep track of numbers already displayed
+			current.setAttribute("src", "image/"+ r + ".png" );
+			arr[x][y] = r;
+	    }    
+	}*/</script>
+<style type="text/css">
+body{
+	text-align: center;
+	padding-top: 40px;
+	}
+	
+img{
+	width: 60px;
+	height: 60px;
+	}
+table, td {
+	border: solid;
+	border-collapse: collapse;
+	padding: 6px;
+	margin-left: auto;
+    margin-right: auto;
+}
+
+</style>
+</head>
+<body>
+<h1> Works with chrome</h1>
+<p style="color: blue; ">Try to arrange the tiles in sequential order</p>
+<p style="color: blue; ">Click on tile to move it</p>
+<br>
+<table>
+	<tr>
+		<td><img id="img0" src=""></td>
+		<td><img id="img1" src=""></td>
+	</tr>
+	<tr>
+		<td><img id="img2" src=""></td>
+		<td><img id="img3" src=""></td>
+	</tr>
+</table>
+
+
+<p id="restart" style="display: none">Restart</p>
+<br><br>
+<h1 id="para" style="color: red; font-size: 30px;"></h1>
+
+<input type="button" onclick="restart();" value="Restart">
+</body>
+</html>
